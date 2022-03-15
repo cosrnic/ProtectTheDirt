@@ -1,17 +1,28 @@
 package me.cosmic.protectthedirt;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime; // Import the LocalDateTime class
 import java.time.format.DateTimeFormatter; // Import the DateTimeFormatter class
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 public class DirtBreak implements Listener {
     ProtectTheDirt plugin;
@@ -30,6 +41,23 @@ public class DirtBreak implements Listener {
             String formattedDate = myDateObj.format(myFormatObj);
             System.out.println("[" + formattedDate + "]" + " DIRT HAS BEEN BROKEN BY " + p.getName());
             logToFile("[" + formattedDate + "]" + " DIRT HAS BEEN BROKEN BY " + p.getName());
+        }
+    }
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        if (event.getEntity() instanceof Creeper) {
+            for (Block block : event.blockList().toArray(new Block[event.blockList().size()])){
+                if(block.getType() == Material.DIRT){
+                    Player[] p = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+                    LocalDateTime myDateObj = LocalDateTime.now();
+                    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+                    String formattedDate = myDateObj.format(myFormatObj);
+                    System.out.println("[" + formattedDate + "]" + " DIRT HAS BEEN BROKEN BY " + Arrays.toString(p));
+                    logToFile("[" + formattedDate + "]" + " DIRT HAS BEEN BROKEN BY " + Arrays.toString(p));
+
+                }
+            }
         }
     }
 
